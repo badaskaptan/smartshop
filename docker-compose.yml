@@ -1,0 +1,40 @@
+version: '3.8'
+services:
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: smartshop
+      POSTGRES_PASSWORD: smartshop
+      POSTGRES_DB: smartshop
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+
+  redis:
+    image: redis:7
+    ports:
+      - '6379:6379'
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - '8080:8080'
+
+  api:
+    build:
+      context: ./apps/api
+    command: npm run dev
+    volumes:
+      - ./apps/api:/usr/src/app
+    ports:
+      - '4000:4000'
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      - postgres
+      - redis
+
+volumes:
+  pgdata:
