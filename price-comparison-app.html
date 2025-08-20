@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartShop - Akıllı Karşılaştırma</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        .search-section {
+            padding: 20px;
+            background: #f8f9fa;
+        }
+
+        .search-box {
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 15px 50px 15px 20px;
+            border: 2px solid #e0e6ed;
+            border-radius: 25px;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .search-input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 10px rgba(102, 126, 234, 0.2);
+        }
+
+        .search-btn {
+            position: absolute;
+            right: 5px;
+            top: 5px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .quick-actions {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 12px;
+            background: white;
+            border: 2px solid #e0e6ed;
+            border-radius: 15px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .action-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .product-results {
+            padding: 0 20px;
+        }
+
+        .result-card {
+            background: white;
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .result-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .product-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+
+        .product-name {
+            font-weight: bold;
+            font-size: 16px;
+            flex: 1;
+            margin-right: 10px;
+        }
+
+        .best-price {
+            background: #00c851;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .platforms {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .platform {
+            flex: 1;
+            text-align: center;
+            padding: 8px 5px;
+            border-radius: 8px;
+            font-size: 12px;
+        }
+
+        .platform.trendyol {
+            background: #f27a1a;
+            color: white;
+        }
+
+        .platform.amazon {
+            background: #ff9900;
+            color: white;
+        }
+
+        .platform.hepsiburada {
+            background: #ff6000;
+            color: white;
+        }
+
+        .rating {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-bottom: 5px;
+        }
+
+        .stars {
+            color: #ffd700;
+        }
+
+        .summary {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            font-size: 13px;
+            color: #666;
+        }
+
+        .sell-section {
+            background: #f8f9fa;
+            margin: 20px;
+            padding: 20px;
+            border-radius: 15px;
+        }
+
+        .sell-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .sell-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e6ed;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .sell-results {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+
+        .floating-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            z-index: 1000;
+        }
+
+        .tabs {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 400px;
+            background: white;
+            display: flex;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        }
+
+        .tab {
+            flex: 1;
+            padding: 15px 10px;
+            text-align: center;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-size: 12px;
+            transition: all 0.3s;
+        }
+
+        .tab.active {
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .content {
+            padding-bottom: 80px;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📱 SmartShop</h1>
+            <p>Akıllı karşılaştırma ile en iyi fırsatları bul</p>
+        </div>
+
+        <div class="content">
+            <div id="search-tab" class="tab-content">
+                <div class="search-section">
+                    <div class="search-box">
+                        <input type="text" class="search-input" placeholder="Ürün ara... (örn: PS5, iPhone 15)" id="searchInput">
+                        <button class="search-btn" onclick="searchProduct()">🔍</button>
+                    </div>
+                    
+                    <div class="quick-actions">
+                        <button class="action-btn active" onclick="setSearchMode('buy')">Satın Al</button>
+                        <button class="action-btn" onclick="setSearchMode('sell')">Sat</button>
+                    </div>
+                </div>
+
+                <div id="buyMode" class="product-results">
+                    <div class="result-card">
+                        <div class="product-header">
+                            <div class="product-name">Sony PlayStation 5 Digital Edition</div>
+                            <div class="best-price">EN İYİ</div>
+                        </div>
+                        
+                        <div class="platforms">
+                            <div class="platform trendyol">
+                                <div>Trendyol</div>
+                                <div><strong>₺8.999</strong></div>
+                            </div>
+                            <div class="platform amazon">
+                                <div>Amazon</div>
+                                <div><strong>₺9.299</strong></div>
+                            </div>
+                            <div class="platform hepsiburada">
+                                <div>Hepsiburada</div>
+                                <div><strong>₺9.150</strong></div>
+                            </div>
+                        </div>
+
+                        <div class="rating">
+                            <div class="stars">⭐⭐⭐⭐⭐</div>
+                            <span>4.8 (1,247 değerlendirme)</span>
+                        </div>
+
+                        <div class="summary">
+                            💡 <strong>Önerilen:</strong> Trendyol'da ₺300 daha ucuz. Ücretsiz kargo ve 2 yıl garanti. Ortalama teslimat süresi: 2-3 gün.
+                        </div>
+                    </div>
+
+                    <div class="result-card">
+                        <div class="product-header">
+                            <div class="product-name">Apple iPhone 15 128GB</div>
+                        </div>
+                        
+                        <div class="platforms">
+                            <div class="platform amazon">
+                                <div>Amazon</div>
+                                <div><strong>₺42.999</strong></div>
+                            </div>
+                            <div class="platform trendyol">
+                                <div>Trendyol</div>
+                                <div><strong>₺43.499</strong></div>
+                            </div>
+                            <div class="platform hepsiburada">
+                                <div>Hepsiburada</div>
+                                <div><strong>₺43.200</strong></div>
+                            </div>
+                        </div>
+
+                        <div class="rating">
+                            <div class="stars">⭐⭐⭐⭐⭐</div>
+                            <span>4.9 (856 değerlendirme)</span>
+                        </div>
+
+                        <div class="summary">
+                            💡 <strong>Önerilen:</strong> Amazon'da en uygun fiyat. Apple Türkiye garantili. Aynı gün teslimat mevcut.
+                        </div>
+                    </div>
+                </div>
+
+                <div id="sellMode" class="sell-section hidden">
+                    <div class="sell-title">🏪 Ürünümü Sat</div>
+                    <input type="text" class="sell-input" placeholder="Ürün adı">
+                    <input type="text" class="sell-input" placeholder="Marka ve model">
+                    <input type="text" class="sell-input" placeholder="Durumu (Yeni/2.El/Hasarlı)">
+                    
+                    <button class="search-btn" style="position: relative; width: 100%; margin-top: 10px; height: 45px; border-radius: 10px;" onclick="analyzeSellOptions()">
+                        Satış Analizi Yap
+                    </button>
+
+                    <div class="sell-results">
+                        <h4>📊 Satış Önerileriniz:</h4>
+                        <div style="margin: 10px 0;">
+                            <strong>🥇 En İyi Platform:</strong> Sahibinden.com<br>
+                            <small>Ortalama satış süresi: 7-14 gün</small>
+                        </div>
+                        <div style="margin: 10px 0;">
+                            <strong>💰 Önerilen Fiyat Aralığı:</strong> ₺7.500 - ₺8.200<br>
+                            <small>Piyasa ortalamasına göre</small>
+                        </div>
+                        <div style="margin: 10px 0;">
+                            <strong>📈 Alternatif Platformlar:</strong><br>
+                            • Letgo: ₺7.200-7.800 (5-10 gün)<br>
+                            • Facebook Marketplace: ₺7.000-7.600 (3-7 gün)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('search')">
+                🔍<br>Ara
+            </button>
+            <button class="tab" onclick="switchTab('favorites')">
+                ❤️<br>Favoriler
+            </button>
+            <button class="tab" onclick="switchTab('alerts')">
+                🔔<br>Uyarılar
+            </button>
+            <button class="tab" onclick="switchTab('profile')">
+                👤<br>Profil
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let searchMode = 'buy';
+
+        function setSearchMode(mode) {
+            searchMode = mode;
+            const buttons = document.querySelectorAll('.action-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            
+            if (mode === 'buy') {
+                buttons[0].classList.add('active');
+                document.getElementById('buyMode').classList.remove('hidden');
+                document.getElementById('sellMode').classList.add('hidden');
+            } else {
+                buttons[1].classList.add('active');
+                document.getElementById('buyMode').classList.add('hidden');
+                document.getElementById('sellMode').classList.remove('hidden');
+            }
+        }
+
+        function searchProduct() {
+            const query = document.getElementById('searchInput').value;
+            if (query.trim()) {
+                // Simulated search animation
+                const searchBtn = document.querySelector('.search-btn');
+                searchBtn.innerHTML = '⏳';
+                
+                setTimeout(() => {
+                    searchBtn.innerHTML = '🔍';
+                    // In real app, this would trigger API calls to scrape data
+                    showSearchResults(query);
+                }, 1000);
+            }
+        }
+
+        function showSearchResults(query) {
+            // Simulated results based on search query
+            alert(`"${query}" için karşılaştırma yapılıyor...\n\n` +
+                  `✅ 15 platform tarandı\n` +
+                  `✅ 127 ürün bulundu\n` +
+                  `✅ En iyi fırsat gösteriliyor`);
+        }
+
+        function analyzeSellOptions() {
+            alert(`Satış analizi tamamlandı!\n\n` +
+                  `📊 5 platform analiz edildi\n` +
+                  `📈 Son 30 gün fiyat trendi incelendi\n` +
+                  `🎯 En optimal satış stratejisi hazırlandı`);
+        }
+
+        function switchTab(tabName) {
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // In a real app, this would switch between different content sections
+            if (tabName !== 'search') {
+                alert(`${tabName} sekmesi geliştirme aşamasında!`);
+            }
+        }
+
+        // Auto-search on Enter key
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchProduct();
+            }
+        });
+    </script>
+</body>
+</html>
