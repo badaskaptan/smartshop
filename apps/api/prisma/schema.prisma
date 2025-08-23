@@ -19,8 +19,11 @@ model Product {
   name        String
   brand       String?
   model       String?
+  category    String?
   description String?
+  imageUrl    String?
   createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
   listings    Listing[]
 }
 

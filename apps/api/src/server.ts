@@ -1,5 +1,6 @@
 import Fastify from 'fastify';
 import { authRoutes } from './routes/auth';
+import { productRoutes } from './routes/product';
 
 // For self-test
 async function fetchWrapper(url: string) {
@@ -12,6 +13,32 @@ const PORT = process.env.PORT ? Number(process.env.PORT) : 4000;
 
 // Simple health route
 fastify.get('/health', async () => ({ status: 'ok', ts: Date.now() }));
+
+// Root route with API info
+fastify.get('/', async () => ({
+  name: 'SmartShop API',
+  version: '1.0.0',
+  status: 'running',
+  endpoints: {
+    health: '/health',
+    auth: {
+      register: 'POST /api/auth/register',
+      login: 'POST /api/auth/login', 
+      profile: 'GET /api/auth/profile'
+    },
+    products: {
+      create: 'POST /api/products',
+      list: 'GET /api/products',
+      search: 'GET /api/products?q=keyword',
+      getById: 'GET /api/products/:id',
+      update: 'PUT /api/products/:id',
+      delete: 'DELETE /api/products/:id'
+    },
+    search: 'GET /api/search?q=keyword'
+  },
+  frontend: 'http://localhost:3000/price-comparison-app.html',
+  docs: 'API endpoints for SmartShop price comparison platform'
+}));
 
 // Mock search endpoint for MVP
 fastify.get('/api/search', async (request, reply) => {
@@ -53,6 +80,10 @@ const start = async () => {
     // Register auth routes
     console.log('Registering auth routes...');
     fastify.register(authRoutes);
+    
+    // Register product routes
+    console.log('Registering product routes...');
+    fastify.register(productRoutes);
     
     console.log('Starting to listen...');
     try {
