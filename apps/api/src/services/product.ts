@@ -21,12 +21,12 @@ export class ProductService {
       const product = await this.prisma.product.create({
         data: {
           name: data.name,
-          description: data.description || null,
-          category: data.category || null,
-          brand: data.brand || null,
-          model: data.model || null,
-          imageUrl: data.imageUrl || null,
-        },
+          description: data.description,
+          brand: data.brand,
+          model: data.model,
+          ...(data.category && { category: data.category }),
+          ...(data.imageUrl && { imageUrl: data.imageUrl }),
+        } as any,
       });
 
       return { success: true, product };
@@ -68,16 +68,17 @@ export class ProductService {
     imageUrl?: string;
   }) {
     try {
+      const updateData: any = {};
+      if (data.name !== undefined) updateData.name = data.name;
+      if (data.description !== undefined) updateData.description = data.description;
+      if (data.category !== undefined) updateData.category = data.category;
+      if (data.brand !== undefined) updateData.brand = data.brand;
+      if (data.model !== undefined) updateData.model = data.model;
+      if (data.imageUrl !== undefined) updateData.imageUrl = data.imageUrl;
+
       const product = await this.prisma.product.update({
         where: { id },
-        data: {
-          ...(data.name !== undefined && { name: data.name }),
-          ...(data.description !== undefined && { description: data.description }),
-          ...(data.category !== undefined && { category: data.category }),
-          ...(data.brand !== undefined && { brand: data.brand }),
-          ...(data.model !== undefined && { model: data.model }),
-          ...(data.imageUrl !== undefined && { imageUrl: data.imageUrl }),
-        },
+        data: updateData as any,
       });
 
       return { success: true, product };
