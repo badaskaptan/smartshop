@@ -1,4 +1,11 @@
 import Fastify from 'fastify';
+import { authRoutes } from './routes/auth';
+
+// For self-test
+async function fetchWrapper(url: string) {
+  const fetch = (await import('node-fetch')).default;
+  return fetch(url);
+}
 
 const fastify = Fastify({ logger: true });
 const PORT = process.env.PORT ? Number(process.env.PORT) : 4000;
@@ -41,9 +48,34 @@ fastify.get('/api/search', async (request, reply) => {
 
 const start = async () => {
   try {
-    await fastify.listen({ port: PORT, host: '0.0.0.0' });
+    console.log('Starting server...');
+    
+    // Register auth routes
+    console.log('Registering auth routes...');
+    fastify.register(authRoutes);
+    
+    console.log('Starting to listen...');
+    try {
+      await fastify.listen({ port: PORT, host: '127.0.0.1' });
+      console.log(`✅ Server successfully listening on http://127.0.0.1:${PORT}`);
+      
+      // Test that we can actually make a request to ourselves
+      setTimeout(async () => {
+        try {
+          const response = await fetchWrapper(`http://127.0.0.1:${PORT}/health`);
+          console.log('✅ Self-test successful:', await response.text());
+        } catch (e) {
+          console.error('❌ Self-test failed:', (e as Error).message);
+        }
+      }, 1000);
+      
+    } catch (listenError) {
+      console.error('❌ Listen failed:', listenError);
+      throw listenError;
+    }
     fastify.log.info(`API listening on ${PORT}`);
   } catch (err) {
+    console.error('❌ Server startup failed:', err);
     fastify.log.error(err);
     process.exit(1);
   }
