@@ -1,6 +1,7 @@
 import Fastify from 'fastify';
 import { authRoutes } from './routes/auth';
 import { productRoutes } from './routes/product';
+import { listingRoutes } from './routes/listing';
 
 // For self-test
 async function fetchWrapper(url: string) {
@@ -33,6 +34,16 @@ fastify.get('/', async () => ({
       getById: 'GET /api/products/:id',
       update: 'PUT /api/products/:id',
       delete: 'DELETE /api/products/:id'
+    },
+    listings: {
+      create: 'POST /api/listings',
+      list: 'GET /api/listings',
+      search: 'GET /api/listings?platform=trendyol',
+      getById: 'GET /api/listings/:id',
+      update: 'PUT /api/listings/:id',
+      delete: 'DELETE /api/listings/:id',
+      byProduct: 'GET /api/products/:productId/listings',
+      priceComparison: 'GET /api/products/:productId/price-comparison'
     },
     search: 'GET /api/search?q=keyword'
   },
@@ -84,6 +95,10 @@ const start = async () => {
     // Register product routes
     console.log('Registering product routes...');
     fastify.register(productRoutes);
+    
+    // Register listing routes
+    console.log('Registering listing routes...');
+    fastify.register(listingRoutes);
     
     console.log('Starting to listen...');
     try {
