@@ -28,26 +28,12 @@ model Product {
 }
 
 model Listing {
-  id                String   @id @default(uuid())
-  product           Product  @relation(fields: [productId], references: [id])
-  productId         String
-  platform          String
-  platformProductId String?
-  externalId        String?
-  url               String?
-  title             String?
-  description       String?
-  price             Float
-  currency          String   @default("TRY")
-  originalPrice     Float?
-  discount          Int?
-  rating            Float?
-  reviewCount       Int?
-  inStock           Boolean  @default(true)
-  sellerName        String?
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
-  lastUpdated       DateTime @default(now())
+  id        String   @id @default(uuid())
+  product   Product  @relation(fields: [productId], references: [id])
+  productId String
+  platform  String
+  url       String?
+  price     Float
   priceHistory      PriceHistory[]
 }
 

@@ -147,15 +147,15 @@ export class ProductService {
         where.brand = { contains: params.brand, mode: 'insensitive' };
       }
 
-      const [products, total] = await Promise.all([
-        this.prisma.product.findMany({
-          where,
-          skip,
-          take: limit,
-          orderBy: { createdAt: 'desc' },
-        }),
-        this.prisma.product.count({ where }),
-      ]);
+      // Sıralı çalıştır, parallel değil (prepared statement çakışmasını önlemek için)
+      const products = await this.prisma.product.findMany({
+        where,
+        skip,
+        take: limit,
+        orderBy: { createdAt: 'desc' },
+      });
+      
+      const total = await this.prisma.product.count({ where });
 
       return {
         success: true,

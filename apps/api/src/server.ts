@@ -2,6 +2,7 @@ import Fastify from 'fastify';
 import { authRoutes } from './routes/auth';
 import { productRoutes } from './routes/product';
 import { listingRoutes } from './routes/listing';
+import { dynamicSearchRoutes } from './routes/dynamicSearch';
 
 // For self-test
 async function fetchWrapper(url: string) {
@@ -11,6 +12,17 @@ async function fetchWrapper(url: string) {
 
 const fastify = Fastify({ logger: true });
 const PORT = process.env.PORT ? Number(process.env.PORT) : 4000;
+
+// Manual CORS support
+fastify.addHook('onRequest', async (request, reply) => {
+  reply.header('Access-Control-Allow-Origin', '*');
+  reply.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  reply.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+});
+
+fastify.options('*', async (request, reply) => {
+  return reply.status(200).send();
+});
 
 // Simple health route
 fastify.get('/health', async () => ({ status: 'ok', ts: Date.now() }));
@@ -98,7 +110,11 @@ const start = async () => {
     
     // Register listing routes
     console.log('Registering listing routes...');
-    fastify.register(listingRoutes);
+    fastify.register(listingRoutes, { prefix: '/api' });
+    
+    // Register dynamic search routes
+    console.log('Registering dynamic search routes...');
+    fastify.register(dynamicSearchRoutes);
     
     console.log('Starting to listen...');
     try {

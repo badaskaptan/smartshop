@@ -279,6 +279,18 @@
         .hidden {
             display: none;
         }
+
+        .sell-analysis-btn {
+            position: relative;
+            width: 100%;
+            margin-top: 10px;
+            height: 45px;
+            border-radius: 10px;
+        }
+
+        .sell-result-item {
+            margin: 10px 0;
+        }
     </style>
 </head>
 <body>
@@ -293,7 +305,7 @@
                 <div class="search-section">
                     <div class="search-box">
                         <input type="text" class="search-input" placeholder="Ürün ara... (örn: PS5, iPhone 15)" id="searchInput">
-                        <button class="search-btn" onclick="searchProduct()">🔍</button>
+                        <button class="search-btn" onclick="console.log('Search button clicked'); searchProduct()">🔍</button>
                     </div>
                     
                     <div class="quick-actions">
@@ -303,59 +315,10 @@
                 </div>
 
                 <div id="buyMode" class="product-results">
-                    <div class="result-card">
-                        <div class="product-header">
-                            <div class="product-name">Sony PlayStation 5 Digital Edition</div>
-                            <div class="best-price">EN İYİ</div>
-                        </div>
-                        
-                        <div class="platforms">
-                            <div class="platform trendyol">
-                                <div>Trendyol</div>
-                                <div><strong>₺8.999</strong></div>
-                            </div>
-                            <div class="platform amazon">
-                                <div>Amazon</div>
-                                <div><strong>₺9.299</strong></div>
-                            </div>
-                            <div class="platform hepsiburada">
-                                <div>Hepsiburada</div>
-                                <div><strong>₺9.150</strong></div>
-                            </div>
-                        </div>
-
-                        <div class="rating">
-                            <div class="stars">⭐⭐⭐⭐⭐</div>
-                            <span>4.8 (1,247 değerlendirme)</span>
-                        </div>
-
-                        <div class="summary">
-                            💡 <strong>Önerilen:</strong> Trendyol'da ₺300 daha ucuz. Ücretsiz kargo ve 2 yıl garanti. Ortalama teslimat süresi: 2-3 gün.
-                        </div>
+                    <div id="searchResultsContainer" style="padding: 20px; text-align: center; color: #666;">
+                        🔍 Ürün arayın...
                     </div>
-
-                    <div class="result-card">
-                        <div class="product-header">
-                            <div class="product-name">Apple iPhone 15 128GB</div>
-                        </div>
-                        
-                        <div class="platforms">
-                            <div class="platform amazon">
-                                <div>Amazon</div>
-                                <div><strong>₺42.999</strong></div>
-                            </div>
-                            <div class="platform trendyol">
-                                <div>Trendyol</div>
-                                <div><strong>₺43.499</strong></div>
-                            </div>
-                            <div class="platform hepsiburada">
-                                <div>Hepsiburada</div>
-                                <div><strong>₺43.200</strong></div>
-                            </div>
-                        </div>
-
-                        <div class="rating">
-                            <div class="stars">⭐⭐⭐⭐⭐</div>
+                </div>
                             <span>4.9 (856 değerlendirme)</span>
                         </div>
 
@@ -371,21 +334,21 @@
                     <input type="text" class="sell-input" placeholder="Marka ve model">
                     <input type="text" class="sell-input" placeholder="Durumu (Yeni/2.El/Hasarlı)">
                     
-                    <button class="search-btn" style="position: relative; width: 100%; margin-top: 10px; height: 45px; border-radius: 10px;" onclick="analyzeSellOptions()">
+                    <button class="search-btn sell-analysis-btn" onclick="analyzeSellOptions()">
                         Satış Analizi Yap
                     </button>
 
                     <div class="sell-results">
                         <h4>📊 Satış Önerileriniz:</h4>
-                        <div style="margin: 10px 0;">
+                        <div class="sell-result-item">
                             <strong>🥇 En İyi Platform:</strong> Sahibinden.com<br>
                             <small>Ortalama satış süresi: 7-14 gün</small>
                         </div>
-                        <div style="margin: 10px 0;">
+                        <div class="sell-result-item">
                             <strong>💰 Önerilen Fiyat Aralığı:</strong> ₺7.500 - ₺8.200<br>
                             <small>Piyasa ortalamasına göre</small>
                         </div>
-                        <div style="margin: 10px 0;">
+                        <div class="sell-result-item">
                             <strong>📈 Alternatif Platformlar:</strong><br>
                             • Letgo: ₺7.200-7.800 (5-10 gün)<br>
                             • Facebook Marketplace: ₺7.000-7.600 (3-7 gün)
@@ -415,42 +378,226 @@
         let searchMode = 'buy';
 
         function setSearchMode(mode) {
+            console.log('setSearchMode called with:', mode);
             searchMode = mode;
             const buttons = document.querySelectorAll('.action-btn');
+            console.log('Found buttons:', buttons.length);
             buttons.forEach(btn => btn.classList.remove('active'));
             
             if (mode === 'buy') {
                 buttons[0].classList.add('active');
-                document.getElementById('buyMode').classList.remove('hidden');
-                document.getElementById('sellMode').classList.add('hidden');
+                const buyMode = document.getElementById('buyMode');
+                const sellMode = document.getElementById('sellMode');
+                console.log('buyMode element:', buyMode);
+                console.log('sellMode element:', sellMode);
+                
+                if (buyMode) buyMode.classList.remove('hidden');
+                if (sellMode) sellMode.classList.add('hidden');
             } else {
                 buttons[1].classList.add('active');
-                document.getElementById('buyMode').classList.add('hidden');
-                document.getElementById('sellMode').classList.remove('hidden');
+                const buyMode = document.getElementById('buyMode');
+                const sellMode = document.getElementById('sellMode');
+                if (buyMode) buyMode.classList.add('hidden');
+                if (sellMode) sellMode.classList.remove('hidden');
             }
         }
 
         function searchProduct() {
             const query = document.getElementById('searchInput').value;
+            console.log('Search triggered with query:', query);
+            
             if (query.trim()) {
-                // Simulated search animation
                 const searchBtn = document.querySelector('.search-btn');
                 searchBtn.innerHTML = '⏳';
                 
-                setTimeout(() => {
+                // Basit arama API'si kullan
+                fetch(`http://localhost:4000/api/products?q=${encodeURIComponent(query)}`)
+                .then(response => {
+                    console.log('API response status:', response.status);
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('API response data:', data);
                     searchBtn.innerHTML = '🔍';
-                    // In real app, this would trigger API calls to scrape data
-                    showSearchResults(query);
-                }, 1000);
+                    if (data.success && data.products) {
+                        showSearchResults(query, data.products);
+                    } else {
+                        alert(`"${query}" için ürün bulunamadı.`);
+                    }
+                })
+                .catch(error => {
+                    searchBtn.innerHTML = '🔍';
+                    console.error('API Hatası:', error);
+                    alert('Arama sırasında bir hata oluştu: ' + error.message);
+                });
+            } else {
+                alert('Lütfen arama terimi girin.');
             }
         }
 
-        function showSearchResults(query) {
-            // Simulated results based on search query
-            alert(`"${query}" için karşılaştırma yapılıyor...\n\n` +
-                  `✅ 15 platform tarandı\n` +
-                  `✅ 127 ürün bulundu\n` +
-                  `✅ En iyi fırsat gösteriliyor`);
+        function showSearchResults(query, products) {
+            const container = document.getElementById('searchResultsContainer');
+            
+            if (products.length > 0) {
+                let htmlContent = `<h3>🔍 "${query}" için ${products.length} ürün bulundu</h3>`;
+                
+                // İlk 5 ürünü göster
+                products.slice(0, 5).forEach((product, index) => {
+                    htmlContent += `
+                        <div class="result-card" style="margin: 10px 0; padding: 15px; background: white; border-radius: 10px; border: 1px solid #e0e6ed;">
+                            <div class="product-header">
+                                <div class="product-name" style="font-weight: bold; color: #333;">${product.name}</div>
+                            </div>
+                            <div style="color: #666; margin: 5px 0;">
+                                <strong>Marka:</strong> ${product.brand || 'Belirtilmemiş'}<br>
+                                <strong>Kategori:</strong> ${product.category || 'Genel'}
+                            </div>
+                            <button onclick="togglePriceComparison('${product.id}', '${product.name}')" 
+                                    id="btn-${product.id}"
+                                    style="background: #667eea; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; margin-bottom: 10px;">
+                                💰 Fiyat Karşılaştır
+                            </button>
+                            
+                            <!-- Fiyat karşılaştırma paneli -->
+                            <div id="price-panel-${product.id}" style="display: none; background: #f8f9fa; border-radius: 8px; padding: 15px; margin-top: 10px; border-left: 4px solid #667eea;">
+                                <div class="price-header" style="font-weight: bold; color: #333; margin-bottom: 10px;">
+                                    📊 ${product.name} - Fiyat Karşılaştırması
+                                </div>
+                                <div id="price-content-${product.id}">
+                                    <div style="text-align: center; color: #666;">⏳ Fiyatlar yükleniyor...</div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                container.innerHTML = htmlContent;
+            } else {
+                container.innerHTML = `<div style="padding: 20px; text-align: center; color: #666;">
+                    ❌ "${query}" için hiç ürün bulunamadı.
+                </div>`;
+            }
+        }
+
+        function togglePriceComparison(productId, productName) {
+            const panel = document.getElementById(`price-panel-${productId}`);
+            const button = document.getElementById(`btn-${productId}`);
+            
+            if (panel.style.display === 'none') {
+                // Paneli aç ve fiyatları yükle
+                panel.style.display = 'block';
+                button.innerHTML = '⏳ Yükleniyor...';
+                button.disabled = true;
+                
+                fetchPriceComparisonData(productId, productName);
+            } else {
+                // Paneli kapat
+                panel.style.display = 'none';
+                button.innerHTML = '💰 Fiyat Karşılaştır';
+                button.disabled = false;
+            }
+        }
+
+        function fetchPriceComparisonData(productId, productName) {
+            console.log('fetchPriceComparisonData called with:', productId, productName);
+            
+            fetch(`http://localhost:4000/api/products/${productId}/price-comparison`)
+                .then(response => {
+                    console.log('Price comparison response status:', response.status);
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Price comparison response data:', data);
+                    const button = document.getElementById(`btn-${productId}`);
+                    button.innerHTML = '🔼 Fiyatları Gizle';
+                    button.disabled = false;
+                    
+                    if (data.success && data.data) {
+                        showPriceComparisonPanel(productId, data.data);
+                    } else {
+                        showPriceComparisonError(productId, productName, data);
+                    }
+                })
+                .catch(error => {
+                    console.error('Fiyat karşılaştırma hatası:', error);
+                    const button = document.getElementById(`btn-${productId}`);
+                    button.innerHTML = '❌ Hata Oluştu';
+                    button.disabled = false;
+                    showPriceComparisonError(productId, productName, { error: error.message });
+                });
+        }
+
+        function showPriceComparisonPanel(productId, comparison) {
+            const content = document.getElementById(`price-content-${productId}`);
+            
+            let htmlContent = '';
+            
+            // Özet bilgi
+            if (comparison.lowestPrice && comparison.highestPrice) {
+                htmlContent += `
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 15px;">
+                        <div style="background: #e8f5e8; padding: 10px; border-radius: 6px; text-align: center;">
+                            <div style="color: #2d5016; font-weight: bold;">💰 En Düşük</div>
+                            <div style="color: #2d5016; font-size: 18px;">${comparison.lowestPrice.price.toLocaleString()} TL</div>
+                            <div style="color: #666; font-size: 12px;">${comparison.lowestPrice.platform}</div>
+                        </div>
+                        <div style="background: #fff3cd; padding: 10px; border-radius: 6px; text-align: center;">
+                            <div style="color: #856404; font-weight: bold;">📈 Ortalama</div>
+                            <div style="color: #856404; font-size: 18px;">${comparison.averagePrice ? comparison.averagePrice.toLocaleString() : 'N/A'} TL</div>
+                            <div style="color: #666; font-size: 12px;">${comparison.platformCount || 0} platform</div>
+                        </div>
+                        <div style="background: #f8d7da; padding: 10px; border-radius: 6px; text-align: center;">
+                            <div style="color: #721c24; font-weight: bold;">💸 En Yüksek</div>
+                            <div style="color: #721c24; font-size: 18px;">${comparison.highestPrice.price.toLocaleString()} TL</div>
+                            <div style="color: #666; font-size: 12px;">${comparison.highestPrice.platform}</div>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // Platform listesi
+            if (comparison.listings && comparison.listings.length > 0) {
+                htmlContent += `<div style="font-weight: bold; margin-bottom: 10px;">🏪 Tüm Platformlar:</div>`;
+                
+                comparison.listings.forEach(listing => {
+                    const isLowest = comparison.lowestPrice && listing.price === comparison.lowestPrice.price;
+                    const isHighest = comparison.highestPrice && listing.price === comparison.highestPrice.price;
+                    
+                    let badgeColor = '#6c757d';
+                    let badgeText = '';
+                    if (isLowest) {
+                        badgeColor = '#28a745';
+                        badgeText = 'EN DÜŞÜK';
+                    } else if (isHighest) {
+                        badgeColor = '#dc3545';
+                        badgeText = 'EN YÜKSEK';
+                    }
+                    
+                    htmlContent += `
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: white; border-radius: 6px; margin-bottom: 6px; border: 1px solid #dee2e6;">
+                            <div>
+                                <span style="font-weight: bold;">${listing.platform}</span>
+                                ${badgeText ? `<span style="background: ${badgeColor}; color: white; padding: 2px 6px; border-radius: 3px; font-size: 10px; margin-left: 8px;">${badgeText}</span>` : ''}
+                            </div>
+                            <div style="font-weight: bold; color: #333;">${listing.price.toLocaleString()} TL</div>
+                        </div>
+                    `;
+                });
+            } else {
+                htmlContent += '<div style="text-align: center; color: #666; padding: 20px;">❌ Bu ürün için fiyat bilgisi bulunamadı</div>';
+            }
+            
+            content.innerHTML = htmlContent;
+        }
+
+        function showPriceComparisonError(productId, productName, errorData) {
+            const content = document.getElementById(`price-content-${productId}`);
+            content.innerHTML = `
+                <div style="text-align: center; color: #dc3545; padding: 20px;">
+                    ❌ "${productName}" için fiyat bilgisi şu anda mevcut değil.<br>
+                    <small style="color: #666;">Lütfen daha sonra tekrar deneyin.</small>
+                </div>
+            `;
         }
 
         function analyzeSellOptions() {

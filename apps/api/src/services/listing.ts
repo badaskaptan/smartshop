@@ -230,7 +230,7 @@ export class ListingService {
           where,
           skip,
           take: limit,
-          orderBy: { lastUpdated: 'desc' },
+          orderBy: { price: 'asc' },  // price'a göre sırala
           include: {
             product: {
               select: {
@@ -293,15 +293,14 @@ export class ListingService {
         };
       }
 
-      // Calculate price statistics
-      const inStockListings = listings.filter(l => l.inStock);
-      const prices = inStockListings.map(l => l.price);
+      // Calculate price statistics - tüm listingleri kullan (inStock field yok)
+      const prices = listings.map(l => l.price);
       
-      const lowestPriceListing = inStockListings.reduce((min, curr) => 
+      const lowestPriceListing = listings.reduce((min, curr) => 
         curr.price < min.price ? curr : min
       );
       
-      const highestPriceListing = inStockListings.reduce((max, curr) => 
+      const highestPriceListing = listings.reduce((max, curr) => 
         curr.price > max.price ? curr : max
       );
 
@@ -316,26 +315,22 @@ export class ListingService {
         lowestPrice: {
           platform: lowestPriceListing.platform,
           price: lowestPriceListing.price,
-          currency: (lowestPriceListing as any).currency || 'TRY',
+          currency: 'TRY',  // currency field yok, sabit değer
           url: lowestPriceListing.url,
-          inStock: lowestPriceListing.inStock,
         },
         highestPrice: {
           platform: highestPriceListing.platform,
           price: highestPriceListing.price,
-          currency: (highestPriceListing as any).currency || 'TRY',
+          currency: 'TRY',  // currency field yok, sabit değer
           url: highestPriceListing.url,
-          inStock: highestPriceListing.inStock,
         },
         averagePrice: Math.round(averagePrice * 100) / 100,
         platformCount: listings.length,
         listings: listings.map(l => ({
           platform: l.platform,
           price: l.price,
-          currency: (l as any).currency || 'TRY',
+          currency: 'TRY',  // currency field yok, sabit değer
           url: l.url,
-          inStock: l.inStock,
-          updatedAt: (l as any).updatedAt || new Date(),
         })),
       };
     } catch (error) {
