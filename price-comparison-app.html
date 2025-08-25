@@ -292,6 +292,7 @@
             margin: 10px 0;
         }
     </style>
+    <link rel="stylesheet" href="assets/styles.css">
 </head>
 <body>
     <div class="container">
@@ -315,7 +316,7 @@
                 </div>
 
                 <div id="buyMode" class="product-results">
-                    <div id="searchResultsContainer" style="padding: 20px; text-align: center; color: #666;">
+                    <div id="searchResultsContainer" class="center-muted">
                         🔍 Ürün arayın...
                     </div>
                 </div>
@@ -444,27 +445,27 @@
                 // İlk 5 ürünü göster
                 products.slice(0, 5).forEach((product, index) => {
                     htmlContent += `
-                        <div class="result-card" style="margin: 10px 0; padding: 15px; background: white; border-radius: 10px; border: 1px solid #e0e6ed;">
+                        <div class="result-card">
                             <div class="product-header">
-                                <div class="product-name" style="font-weight: bold; color: #333;">${product.name}</div>
+                                <div class="product-name">${product.name}</div>
                             </div>
-                            <div style="color: #666; margin: 5px 0;">
+                            <div class="muted">
                                 <strong>Marka:</strong> ${product.brand || 'Belirtilmemiş'}<br>
                                 <strong>Kategori:</strong> ${product.category || 'Genel'}
                             </div>
                             <button onclick="togglePriceComparison('${product.id}', '${product.name}')" 
                                     id="btn-${product.id}"
-                                    style="background: #667eea; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; margin-bottom: 10px;">
+                                    class="btn-primary">
                                 💰 Fiyat Karşılaştır
                             </button>
                             
                             <!-- Fiyat karşılaştırma paneli -->
-                            <div id="price-panel-${product.id}" style="display: none; background: #f8f9fa; border-radius: 8px; padding: 15px; margin-top: 10px; border-left: 4px solid #667eea;">
-                                <div class="price-header" style="font-weight: bold; color: #333; margin-bottom: 10px;">
+                            <div id="price-panel-${product.id}" class="price-panel">
+                                <div class="price-header">
                                     📊 ${product.name} - Fiyat Karşılaştırması
                                 </div>
                                 <div id="price-content-${product.id}">
-                                    <div style="text-align: center; color: #666;">⏳ Fiyatlar yükleniyor...</div>
+                                    <div class="loading-text">⏳ Fiyatlar yükleniyor...</div>
                                 </div>
                             </div>
                         </div>
@@ -535,21 +536,21 @@
             // Özet bilgi
             if (comparison.lowestPrice && comparison.highestPrice) {
                 htmlContent += `
-                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 15px;">
-                        <div style="background: #e8f5e8; padding: 10px; border-radius: 6px; text-align: center;">
-                            <div style="color: #2d5016; font-weight: bold;">💰 En Düşük</div>
-                            <div style="color: #2d5016; font-size: 18px;">${comparison.lowestPrice.price.toLocaleString()} TL</div>
-                            <div style="color: #666; font-size: 12px;">${comparison.lowestPrice.platform}</div>
+                    <div class="summary-grid">
+                        <div class="card-low">
+                            <div class="title">💰 En Düşük</div>
+                            <div class="value">${comparison.lowestPrice.price.toLocaleString()} TL</div>
+                            <div class="muted">${comparison.lowestPrice.platform}</div>
                         </div>
-                        <div style="background: #fff3cd; padding: 10px; border-radius: 6px; text-align: center;">
-                            <div style="color: #856404; font-weight: bold;">📈 Ortalama</div>
-                            <div style="color: #856404; font-size: 18px;">${comparison.averagePrice ? comparison.averagePrice.toLocaleString() : 'N/A'} TL</div>
-                            <div style="color: #666; font-size: 12px;">${comparison.platformCount || 0} platform</div>
+                        <div class="card-avg">
+                            <div class="title">📈 Ortalama</div>
+                            <div class="value">${comparison.averagePrice ? comparison.averagePrice.toLocaleString() : 'N/A'} TL</div>
+                            <div class="muted">${comparison.platformCount || 0} platform</div>
                         </div>
-                        <div style="background: #f8d7da; padding: 10px; border-radius: 6px; text-align: center;">
-                            <div style="color: #721c24; font-weight: bold;">💸 En Yüksek</div>
-                            <div style="color: #721c24; font-size: 18px;">${comparison.highestPrice.price.toLocaleString()} TL</div>
-                            <div style="color: #666; font-size: 12px;">${comparison.highestPrice.platform}</div>
+                        <div class="card-high">
+                            <div class="title">💸 En Yüksek</div>
+                            <div class="value">${comparison.highestPrice.price.toLocaleString()} TL</div>
+                            <div class="muted">${comparison.highestPrice.platform}</div>
                         </div>
                     </div>
                 `;
@@ -573,18 +574,19 @@
                         badgeText = 'EN YÜKSEK';
                     }
                     
+                    const badgeClass = isLowest ? 'badge badge-low' : (isHighest ? 'badge badge-high' : 'badge');
                     htmlContent += `
-                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: white; border-radius: 6px; margin-bottom: 6px; border: 1px solid #dee2e6;">
+                        <div class="platform-list-item">
                             <div>
-                                <span style="font-weight: bold;">${listing.platform}</span>
-                                ${badgeText ? `<span style="background: ${badgeColor}; color: white; padding: 2px 6px; border-radius: 3px; font-size: 10px; margin-left: 8px;">${badgeText}</span>` : ''}
+                                <span class="platform">${listing.platform}</span>
+                                ${badgeText ? `<span class="badge" style="background: ${badgeColor};">${badgeText}</span>` : ''}
                             </div>
-                            <div style="font-weight: bold; color: #333;">${listing.price.toLocaleString()} TL</div>
+                            <div class="price-value">${listing.price.toLocaleString()} TL</div>
                         </div>
                     `;
                 });
             } else {
-                htmlContent += '<div style="text-align: center; color: #666; padding: 20px;">❌ Bu ürün için fiyat bilgisi bulunamadı</div>';
+                htmlContent += '<div class="no-data">❌ Bu ürün için fiyat bilgisi bulunamadı</div>';
             }
             
             content.innerHTML = htmlContent;
